@@ -65,6 +65,6 @@ export function createIsHostStore(users: Readable<Presence[]>) {
 	return derived([users, page], ([$users, $page]) => {
 		if ($page.data.session == null) return false;
 
-		return $users.at(0) === $page.data.session.user.email;
+		return $users.at(0)?.presence_ref === $page.data.session.user.email;
 	});
 }
