@@ -1,36 +1,16 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { supabaseClient } from '$lib/db';
-	import { onMount } from 'svelte';
+	import type { PageData } from './$types';
 
-	let username = '';
-	let website = '';
+	export let data: PageData;
 
-	let hasError = false;
-	let loading = true;
-
-	$: session = $page.data.session;
-
-	function getProfile() {
-		return supabaseClient.from('profiles').select('*').eq('id', session?.user.id).single();
-	}
-
-	onMount(async () => {
-		const { data, error } = await getProfile();
-
-		loading = false;
-		hasError = error != null;
-
-		if (data) {
-			username = data.username ?? '';
-			website = data.website ?? '';
-		}
-	});
+	let username = data.data?.username ?? '';
+	let website = data.data?.website ?? '';
 
 	function updateProfile() {}
 </script>
 
-{#if hasError}
+{#if data.error}
 	<p>Something went wrong</p>
 {:else}
 	<form class="form-widget" on:submit|preventDefault={updateProfile}>
@@ -48,12 +28,7 @@
 		</div>
 
 		<div>
-			<input
-				type="submit"
-				class="button block primary"
-				value={loading ? 'Loading...' : 'Update'}
-				disabled={loading}
-			/>
+			<input type="submit" class="button block primary" value={'Update'} />
 		</div>
 	</form>
 {/if}
